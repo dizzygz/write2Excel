@@ -2,7 +2,7 @@
 
 import sys, getopt
 import os
-import re,time
+import re,time,random
 import xlwt
 
 def createExcel():
@@ -34,8 +34,14 @@ def createTagDetectSheet(bookname, sheet,dataFile):
                 else:
                     leftStr +=' '+v
             sh.write(n, 4, leftStr)
-
             n += 1
+            if(n >= 65536):
+                n=1
+                sh = bookname.add_sheet(sheet+str(random.randrange(0,100)))
+                icol = 0
+                for icol, col in enumerate(variables):
+                    sh.write(0, icol, col)
+
 
     f.close()
 
@@ -67,6 +73,12 @@ def createRegularSheet(bookname, sheet,dataFile):
                 sh.write(n, icol2, v)
 
              n+=1
+             if (n >= 65536):
+                 n=1
+                 sh = bookname.add_sheet(sheet + str(random.randrange(0, 100)))
+                 icol = 0
+                 for icol, col in enumerate(variables):
+                     sh.write(0, icol, col)
 
     f.close()
 
