@@ -24,12 +24,6 @@ def createRegularSheet(bookname, sheet,dataFile):
     icol=0
     for icol,col in enumerate(variables):
        sh.write(0, icol, col)
-       #++icol
-
-    x_desc = 'Display'
-    y_desc = 'Dominance'
-    z_desc = 'Test'
-    desc = [x_desc, y_desc, z_desc]
 
     f = open(inputfile, mode='r', buffering=-1, encoding='utf-16', errors='strict',
              newline=None, closefd=True, opener=os.open)
