@@ -19,31 +19,28 @@ def createTagDetectSheet(bookname, sheet,dataFile):
     for icol, col in enumerate(variables):
         sh.write(0, icol, col)
 
-    f = open(inputfile, mode='r', buffering=-1, encoding='utf-16', errors='strict',
-             newline=None, closefd=True, opener=os.open)
-
-    n = 1
-    for line in f:
-        if re.match(r"\d{4}.\d{2}.\d{2}\s+\d{2}\:\d{2}\:\d{2}\.\d{3}\s+\*{0,}\s*V[1-9]*\s+[detected|Calibrate]", line):
-            line = line.lstrip(' ')
-            data = re.split("\s+", line)
-            leftStr = ''
-            for icol2, v in enumerate(data):
-                if(icol2 <= 3):
-                    sh.write(n, icol2, v)
-                else:
-                    leftStr +=' '+v
-            sh.write(n, 4, leftStr)
-            n += 1
-            if(n >= 65536):
-                n=1
-                sh = bookname.add_sheet(sheet+str(random.randrange(0,100)))
-                icol = 0
-                for icol, col in enumerate(variables):
-                    sh.write(0, icol, col)
-
-
-    f.close()
+    with open(inputfile, mode='r', buffering=-1, encoding='utf-16', errors='strict',
+             newline=None, closefd=True, opener=os.open) as f:
+        n = 1
+        for line in f:
+            if re.match(r"\d{4}.\d{2}.\d{2}\s+\d{2}\:\d{2}\:\d{2}\.\d{3}\s+\*{0,}\s*V[1-9]*\s+[detected|Calibrate]", line):
+                line = line.lstrip(' ')
+                data = re.split("\s+", line)
+                leftStr = ''
+                for icol2, v in enumerate(data):
+                    if(icol2 <= 3):
+                        sh.write(n, icol2, v)
+                    else:
+                        leftStr +=' '+v
+                sh.write(n, 4, leftStr)
+                n += 1
+                if(n >= 65536):
+                    n=1
+                    sh = bookname.add_sheet(sheet+str(random.randrange(0,100)))
+                    icol = 0
+                    for icol, col in enumerate(variables):
+                        sh.write(0, icol, col)
+    #f.close()
 
 def createRegularSheet(bookname, sheet,dataFile):
 
@@ -61,27 +58,23 @@ def createRegularSheet(bookname, sheet,dataFile):
     for icol,col in enumerate(variables):
        sh.write(0, icol, col)
 
-    f = open(inputfile, mode='r', buffering=-1, encoding='utf-16', errors='strict',
-             newline=None, closefd=True, opener=os.open)
+    with open(inputfile, mode='r', buffering=-1, encoding='utf-16', errors='strict',
+             newline=None, closefd=True, opener=os.open) as f:
+        n=1
+        for line in f:
+             if re.match(r"\d{4}.\d{2}.\d{2}\s+\d{2}\:\d{2}\:\d{2}\.\d{3}\s+V[1-9]*\s+[0-1]", line):
+                 line = line.lstrip(' ')
+                 data = re.split("\s+",line)
+                 for icol2,v in enumerate(data):
+                    sh.write(n, icol2, v)
 
-    n=1
-    for line in f:
-         if re.match(r"\d{4}.\d{2}.\d{2}\s+\d{2}\:\d{2}\:\d{2}\.\d{3}\s+V[1-9]*\s+[0-1]", line):
-             line = line.lstrip(' ')
-             data = re.split("\s+",line)
-             for icol2,v in enumerate(data):
-                sh.write(n, icol2, v)
-
-             n+=1
-             if (n >= 65536):
-                 n=1
-                 sh = bookname.add_sheet(sheet + str(random.randrange(0, 100)))
-                 icol = 0
-                 for icol, col in enumerate(variables):
-                     sh.write(0, icol, col)
-
-    f.close()
-
+                 n+=1
+                 if (n >= 65536):
+                     n=1
+                     sh = bookname.add_sheet(sheet + str(random.randrange(0, 100)))
+                     icol = 0
+                     for icol, col in enumerate(variables):
+                         sh.write(0, icol, col)
 
 def main(argv):
    inputfile = ''
