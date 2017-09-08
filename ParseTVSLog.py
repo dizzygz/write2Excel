@@ -5,9 +5,13 @@ import os
 import re,time
 import xlwt
 
-def output(filename, sheet,dataFile):
+def createExcel():
     book = xlwt.Workbook()
-    sh = book.add_sheet(sheet)
+    return book
+
+def createRegularSheet(bookname, sheet,dataFile):
+
+    sh = bookname.add_sheet(sheet)
     inputfile = dataFile
 
     variables = ["Date", "Time", "Vid", "m_logCodes","m_strCmds","m_dir","m_entryDir","m_lastStopIdAccepted","GetVelocity","m_tp","m_bTpbCommanded","m_tpBias","m_finePosition",
@@ -39,7 +43,8 @@ def output(filename, sheet,dataFile):
                 sh.write(n, icol2, v)
 
              n+=1
-    book.save(filename)
+
+    f.close()
 
 
 def main(argv):
@@ -59,7 +64,12 @@ def main(argv):
       elif opt in ("-o", "--ofile"):
          outputfile = arg
    t = time.time()
-   output("Result"+str(t)+".xls","TVSLog",inputfile)
+
+
+   book = createExcel()
+   createRegularSheet(book,"TVSLog", inputfile)
+   book.save("Result"+str(t)+".xls")
+
 
 if __name__ == "__main__":
    main(sys.argv[1:])
