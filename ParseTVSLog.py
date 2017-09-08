@@ -9,6 +9,36 @@ def createExcel():
     book = xlwt.Workbook()
     return book
 
+def createTagDetectSheet(bookname, sheet,dataFile):
+    sh = bookname.add_sheet(sheet)
+    inputfile = dataFile
+
+    variables = ["Date", "Time", "Vid", "Action", "Tag"]
+
+    icol = 0
+    for icol, col in enumerate(variables):
+        sh.write(0, icol, col)
+
+    f = open(inputfile, mode='r', buffering=-1, encoding='utf-16', errors='strict',
+             newline=None, closefd=True, opener=os.open)
+
+    n = 1
+    for line in f:
+        if re.match(r"\d{4}.\d{2}.\d{2}\s+\d{2}\:\d{2}\:\d{2}\.\d{3}\s+\*{0,}\s*V[1-9]*\s+[detected|Calibrate]", line):
+            line = line.lstrip(' ')
+            data = re.split("\s+", line)
+            leftStr = ''
+            for icol2, v in enumerate(data):
+                if(icol2 <= 3):
+                    sh.write(n, icol2, v)
+                else:
+                    leftStr +=' '+v
+            sh.write(n, 4, leftStr)
+
+            n += 1
+
+    f.close()
+
 def createRegularSheet(bookname, sheet,dataFile):
 
     sh = bookname.add_sheet(sheet)
@@ -62,6 +92,7 @@ def main(argv):
 
    book = createExcel()
    createRegularSheet(book,"TVSLog", inputfile)
+   createTagDetectSheet(book,"TagScan", inputfile)
    book.save("Result"+str(t)+".xls")
 
 
